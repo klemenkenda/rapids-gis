@@ -91,6 +91,27 @@ class MariaDBDataStorageService {
     }
 
 
+    async getSensors() {
+        let conn;
+
+        try {
+            conn = await this.pool.getConnection();
+            await conn.query('use ' + this.config.db);
+
+            // find last timestamp
+            let query = `select * from sensors`;
+            let records = await conn.query(query);
+            return(records);
+
+        } catch(err) {
+            console.log(err);
+            throw(err);
+        } finally {
+            if (conn) conn.end();
+        }
+    }
+
+
     async getSensorTs(sensor_id) {
         let conn;
 

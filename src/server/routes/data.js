@@ -11,6 +11,7 @@ exports.prepareDataRoutes = () => {
     router.get('/snapshot', data.getLastSnapshot);
     router.get('/places', data.getPlaces);
     router.get('/nodes', data.getNodes);
+    router.get('/sensors', data.getSensors);
     router.get('/sensorts/:sensor_id', data.getSensorTs);
     return(router);
 };

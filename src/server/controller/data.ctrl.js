@@ -18,6 +18,11 @@ exports.getNodes = async (req, res) => {
     res.json(items);
 };
 
+exports.getSensors = async (req, res) => {
+    const items = await storage.getSensors();
+    res.json(items);
+};
+
 exports.getSensorTs = async (req, res) => {
     let sensor_id = Utils.emptyIsNull(req.params.sensor_id);
     if (sensor_id !== null) {
