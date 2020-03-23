@@ -7,59 +7,24 @@ export class RestDataBackend implements LiveBackend {
         this.comp_y = 14.4879161;
     }
 
-    getPlaces(done, err) {
-        axios.get("/api/places")
-            .then(result => {
-                done(result.data);
-            })
-            .catch(error => {
-                console.log(error);
-                err(error);
-            });
+    async getPlaces(): Promise {
+        return (await axios.get("/api/places")).data;
     };
 
-    getNodes(done, err) {
-        axios.get("/api/nodes")
-            .then(result => {
-                done(result.data);
-            })
-            .catch(error => {
-                console.log(error);
-                err(error);
-            });
+    async getNodes(): Promise {
+        return (await axios.get("/api/nodes")).data;
     };
 
-    getLastSnapshot(done, err) {
-        axios.get("/api/snapshot")
-            .then(result => {
-                done(result.data);
-            })
-            .catch(error => {
-                console.log(error);
-                err(error);
-            });
+    async getLastSnapshot(): Promise {
+        return (await axios.get("/api/snapshot")).data;
     };
 
-    getSensorTs(sensor_id, done, err) {
-        axios.get("/api/sensorts/" + sensor_id)
-            .then(result => {
-                done(result.data);
-            })
-            .catch(error => {
-                console.log(error);
-                err(error);
-            });
+    async getSensorTs(sensor_id) {
+        return (await axios.get("/api/sensorts/" + sensor_id)).data;
     };
 
-    getTime(done, err) {
-        axios.get("/api/timestamp")
-            .then(result => {
-                done(result.data);
-            })
-            .catch(error => {
-                console.log(error);
-                err(error);
-            });
+    async getTime() {
+        return (await axios.get("/api/timestamp")).data;
     }
 
 };

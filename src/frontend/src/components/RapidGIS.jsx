@@ -9,6 +9,7 @@ import { getBackend } from '../lib/Backend';
 
 // import subcomponents
 import TitleNavBar from './TitleNavBar';
+import Counter from './Counter';
 
 // import libraries
 import 'leaflet/dist/leaflet.css';
@@ -22,6 +23,9 @@ type Props = {
 };
 
 type State = {
+    places: Array,
+    snapshot: Array,
+    nodes: Array,
     current_ts: number,
     actionable_ts: number,
     action: string
@@ -35,6 +39,9 @@ class Live extends Component<Props, State> {
     constructor(props, state) {
         super(props);
         this.state = {
+            places: [],
+            snapshot: [],
+            nodes: [],
             current_ts: 2147483647,
             actionable_ts: 2147483647,
             action: "live"
@@ -45,37 +52,6 @@ class Live extends Component<Props, State> {
     async componentDidMount() {
 
         try {
-            // let event = await getBackend().live.getEvent(this.event_id);
-            let places = await getBackend().data.getPlaces(
-                (result) => {
-                    this.setState({ places: result });
-                    console.log(result);
-                },
-                (error) => {
-                    console.log("Error loading places");
-                }
-            );
-
-            let nodes = await getBackend().data.getNodes(
-                (result) => {
-                    this.setState({ nodes: result });
-                    console.log(result);
-                },
-                (error) => {
-                    console.log("Error loading places");
-                }
-            );
-
-            let snapshot = await getBackend().data.getLastSnapshot(
-                (result) => {
-                    this.setState({ snapshot: result });
-                    console.log(result);
-                },
-                (error) => {
-                    console.log("Error loading places");
-                }
-            );
-
             // calculate centre
             // Slovenia
             const view_center = [46.1491664, 14.9860106];
@@ -95,14 +71,39 @@ class Live extends Component<Props, State> {
             this.map.zoomControl.setPosition('topright');
             L.control.scale().addTo(this.map);
 
+            // let event = await getBackend().live.getEvent(this.event_id);
+            let places = await getBackend().data.getPlaces();
+            let nodes = await getBackend().data.getNodes();
+            let snapshot = await getBackend().data.getLastSnapshot();
+
+            this.setState({
+                places,
+                nodes,
+                snapshot
+            });
+
+            console.log(places[0], nodes[0], snapshot[0]);
+
+            // init markers for places (counters)
+            let counters = [];
+            let i = 0;
+            for (const place of places) {
+                if (i < 10) {
+                    console.log(place);
+                };
+                counters.push(
+                    new Counter(this, { x: place.x, y: place.y, title: place.title }, this.map)
+                );
+                i++;
+            }
+
+
             // add map image dynamically
             /*
             let imageUrl = '/maps/' + event.map.filename;
             let imageBounds = [coordinates[3], coordinates[1]];
             this.mapImageDB = L.imageOverlay(imageUrl, imageBounds).addTo(this.map);
             */
-
-            let _self = this;
 
             // updating
             // this.countdown = setInterval(() => this.loadTracks(this.event_id), 1000);
