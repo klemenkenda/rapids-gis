@@ -14,7 +14,7 @@ export class RestDataBackend implements LiveBackend {
             })
             .catch(error => {
                 console.log(error);
-                // err(error);
+                err(error);
             });
     };
 
@@ -41,7 +41,7 @@ export class RestDataBackend implements LiveBackend {
     };
 
     getSensorTs(sensor_id, done, err) {
-        axios.get("/api/places/" + sensor_id)
+        axios.get("/api/sensorts/" + sensor_id)
             .then(result => {
                 done(result.data);
             })

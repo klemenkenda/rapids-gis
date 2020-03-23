@@ -46,8 +46,36 @@ class Live extends Component<Props, State> {
 
         try {
             // let event = await getBackend().live.getEvent(this.event_id);
-            let places = await getBackend().data.getPlaces();
-            console.log(places);
+            let places = await getBackend().data.getPlaces(
+                (result) => {
+                    this.setState({ places: result });
+                    console.log(result);
+                },
+                (error) => {
+                    console.log("Error loading places");
+                }
+            );
+
+            let nodes = await getBackend().data.getNodes(
+                (result) => {
+                    this.setState({ nodes: result });
+                    console.log(result);
+                },
+                (error) => {
+                    console.log("Error loading places");
+                }
+            );
+
+            let snapshot = await getBackend().data.getLastSnapshot(
+                (result) => {
+                    this.setState({ snapshot: result });
+                    console.log(result);
+                },
+                (error) => {
+                    console.log("Error loading places");
+                }
+            );
+
             // calculate centre
             // Slovenia
             const view_center = [46.1491664, 14.9860106];
