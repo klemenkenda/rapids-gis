@@ -1,14 +1,25 @@
 import axios from "axios";
-import { Backend, LiveBackend, AdminBackend } from "./Backend";
+import { Backend, DataBackend, AdminBackend } from "./Backend";
 
-export class RestLiveBackend implements LiveBackend {
+export class RestDataBackend implements LiveBackend {
     constructor() {
         this.comp_x = 46.0421255;
         this.comp_y = 14.4879161;
     }
 
-    getCompetitors(event, done, err) {
-        axios.get("/api/competitors?event_id=" + event)
+    getPlaces(done, err) {
+        axios.get("/api/places")
+            .then(result => {
+                done(result.data);
+            })
+            .catch(error => {
+                console.log(error);
+                // err(error);
+            });
+    };
+
+    getNodes(done, err) {
+        axios.get("/api/nodes")
             .then(result => {
                 done(result.data);
             })
@@ -16,10 +27,10 @@ export class RestLiveBackend implements LiveBackend {
                 console.log(error);
                 err(error);
             });
-    }
+    };
 
-    getCoordinates(event_id, done, err) {
-        axios.get("/api/point/" + event_id)
+    getLastSnapshot(done, err) {
+        axios.get("/api/snapshot")
             .then(result => {
                 done(result.data);
             })
@@ -27,18 +38,18 @@ export class RestLiveBackend implements LiveBackend {
                 console.log(error);
                 err(error);
             });
-    }
+    };
 
-    putCoordinates(u, p, x, y, t, done, err) {
-        axios.get("/api/register/" + u + "/" + p + "/" + x + "/" + y + "/" + t)
+    getSensorTs(sensor_id, done, err) {
+        axios.get("/api/places/" + sensor_id)
             .then(result => {
-                done();
+                done(result.data);
             })
             .catch(error => {
                 console.log(error);
                 err(error);
             });
-    }
+    };
 
     getTime(done, err) {
         axios.get("/api/timestamp")
@@ -51,27 +62,6 @@ export class RestLiveBackend implements LiveBackend {
             });
     }
 
-    getEvents(done, err) {
-        axios.get("/api/admin/events")
-            .then(result => {
-                done(result.data);
-            })
-            .catch(error => {
-                console.log(error);
-                err(error);
-            });
-    }
-
-    async getEvent(id, done, err) {
-        try {
-            let url = `/api/admin/event/${id}`;
-            const { data } = await axios.get(url);
-            return data;
-        } catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
 };
 
 export class RestAdminBackend implements AdminBackend {
@@ -86,83 +76,14 @@ export class RestAdminBackend implements AdminBackend {
             });
     };
 
-    async getMaps(u) {
-        try {
-            let url = `/api/admin/maps/`;
-            if (u) url = `/api/admin/maps/${u}`;
-
-            const { data } = await axios.get(url);
-            return data;
-        } catch (e) {
-            console.log(e);
-            throw e;
-        }
-    };
-
-    async uploadMapImage(map) {
-        try {
-            const { data } = await axios.post(`/api/admin/maps/upload/${encodeURIComponent(map.filename)}`, map.file, {
-                headers: {
-                    'content-type': map.file.type
-                }
-            })
-            return data;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    }
-
-    async addMap(map) {
-        try {
-            const image = await this.uploadMapImage(map);
-            if (!image) throw new Error('Map image upload failed');
-
-            const { data } = await axios.post(`/api/admin/maps/add`, { map });
-            return data;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    };
-
-    async editMap(map) {
-        try {
-            if (map.file) {
-                const image = await this.uploadMapImage(map)
-                if (!image) throw new Error('Map image upload failed');
-            }
-
-
-            const { data } = await axios.post(`/api/admin/maps/edit`, { map });
-            return data;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    };
-
-    async deleteMap(id) {
-        try {
-            const { data } = await axios.post(`/api/admin/maps/delete`, { id });
-            return data;
-        }
-        catch (e) {
-            console.log(e);
-            throw e;
-        }
-    };
 }
 
 export class RestBackend implements Backend {
-    live: LiveBackend;
+    data: DataBackend;
     admin: AdminBackend;
 
     constructor() {
-        this.live = new RestLiveBackend();
+        this.data = new RestDataBackend();
         this.admin = new RestAdminBackend();
     }
 }

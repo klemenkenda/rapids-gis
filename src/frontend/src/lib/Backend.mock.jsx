@@ -1,6 +1,6 @@
-import { Backend, LiveBackend } from "./Backend";
+import { Backend, DataBackend } from "./Backend";
 
-export class MockLiveBackend implements LiveBackend {
+export class MockDatBackend implements DataBackend {
     constructor() {
         this.comp_x = 46.0420155;
         this.comp_y = 14.4879161;
@@ -8,76 +8,31 @@ export class MockLiveBackend implements LiveBackend {
         this.comp_y2 = 14.4849161;
     }
 
-    getCompetitors(event, done, err) {
-        done([
-            {
-                "ts":"2019-11-27T14:10:54.000Z","id":1,"event_id":1,"tracker_id":1,
-                "name":"Klemen Kenda","club":"OK Azimut","country":"SLO",
-                "track":[{"ts":1574867257,"lon":14.4874174,"lat":46.0421246}],
-                "start": null
-            },
-            {
-                "ts":"2019-11-27T14:10:54.000Z","id":1,"event_id":1,"tracker_id":1,
-                "name":"Simon Stanonik","club":"OK Azimut","country":"SLO",
-                "track":[{"ts":1574867257,"lon":14.4849174,"lat":46.0423246}],
-                "start": null
-            }
-        ]);
-    }
+    getPlaces(done, err) {
+        done([]);
+    };
 
-    getCoordinates(event, done, err) {
-        this.comp_x += (Math.random() - 0.5) / 10000;
-        this.comp_y += (Math.random() - 0.5) / 10000;
-        this.comp_x2 += (Math.random() - 0.5) / 10000;
-        this.comp_y2 += (Math.random() - 0.5) / 10000;
-        done([
-            {lat: this.comp_x, runner_id: 1, lon: this.comp_y, ts: Math.round(new Date().getTime()/1000)},
-            {lat: this.comp_x2, runner_id: 2, lon: this.comp_y2, ts: Math.round(new Date().getTime()/1000)}
-        ]);
-    }
+    getNodes(done, err) {
+        done([]);
+    };
 
-    putCoordinates(u, p, x, y, t, done, err) {
-        done();
-    }
+    getLastSnapshot(done, err) {
+        done([]);
+    };
+
+    getSensorTs(sensor_id, done, err) {
+        done([]);
+    };
 
     getTime(done, err) {
         done(Math.round(new Date().getTime() / 1000));
     }
-
-    getEvents(done, err) {
-        done([
-            {
-                "ts": "2019-11-27T14:10:54.000Z",
-                "id": 1,
-                "user_id": 1,
-                "name": "Test event",
-                "www": null,
-                "start": "2019-11-30T10:55:00.000Z",
-                "end": null,
-                "active": 1,
-                "public": 1,
-                "map_id": 3
-            },
-            {
-                "ts": "2019-12-05T11:31:41.000Z",
-                "id": 2,
-                "user_id": 1,
-                "name": "Devel event",
-                "www": null,
-                "start": "2019-11-30T11:00:00.000Z",
-                "end": "2019-12-06T15:00:00.000Z",
-                "active": 1,
-                "public": 1,
-                "map_id": 1
-            }
-        ])
-    }
 }
 
 export class MockBackend implements Backend {
-    live: LiveBackend;
+    data: DataBackend;
 
     constructor() {
-        this.live = new MockLiveBackend();
+        this.data = new MockDataBackend();
     }
 }

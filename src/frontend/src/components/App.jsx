@@ -14,7 +14,8 @@ import { Container } from 'react-bootstrap';
 // components
 import Header from "./Header";
 import Login from "./Login";
-import Home from "./Home";
+import RapidGIS from "./RapidGIS";
+// import Home from "./Home";
 import Live from "./Live";
 import Logout from "./Logout";
 import Maps from "./Maps";
@@ -34,18 +35,14 @@ class App extends React.Component<Props, State> {
         return [
             <Router key={1}>
                 <Switch>
-                    <Route path="/(|login|logout|maps)" exact={true} key={1}>
+                    <Route path="!/" exact={true} key={1}>
                         <Header />
                     </Route>
                 </Switch>
             </Router>,
             <Router key={2}>
                 <Switch>
-                    <Route path="/" exact={true} key={1}>
-                        <Container>
-                            <Home />
-                        </Container>
-                    </Route>
+                    <Route path="/" exact={true} key={1} component={RapidGIS} />
                     <Route path="/login" key={2}>
                         <Container>
                             <Login />
@@ -64,7 +61,7 @@ class App extends React.Component<Props, State> {
             </Router>,
             <Router key={3}>
                 <Switch>
-                    <Route path="/(|login|logout|maps)" exact={true} key={1}>
+                    <Route path="!/" exact={true} key={1}>
                         <footer className="text-muted pt-4" style={{ borderTop: "1px solid #eee" }}>
                             <div className="container">
                                 <p className="float-right">

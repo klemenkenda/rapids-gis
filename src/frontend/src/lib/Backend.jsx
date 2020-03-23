@@ -1,9 +1,10 @@
 // o-gpsy backend
 
-export interface LiveBackend {
-    getCompetitors(event_id, done, err): void;
-    getCoordinates(event_id, done, err): void;
-    putCoordinats(u, p, x, y, t, done, err): void;
+export interface DataBackend {
+    getPlaces(): any;
+    getNodes(): any;
+    getLastSnapshot(): any;
+    getSensorTs(sensor_id): any;
     getTime(done, err): void;
 }
 
@@ -12,7 +13,7 @@ export interface AdminBackend {
 }
 
 export interface Backend {
-    live: LiveBackend;
+    data: DataBackend;
     admin: AdminBackend;
 }
 

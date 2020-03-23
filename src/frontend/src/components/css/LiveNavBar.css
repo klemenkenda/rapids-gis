@@ -1,15 +1,18 @@
 .divLiveNavBar {
+    font-family: 'Roboto Condensed', sans-serif;
     position: fixed;
     top: 10px;
     left: 10px;
     background: rgba(255, 255, 255, 0.8);
     z-index: 10000;
+    width: 250px;
     padding: 10px;
     border-radius: 4px;
     box-shadow: 0 1px 5px rgba(0,0,0,0.65);
 }
 
-.spanRunnerClub {
-    font-size: 8px;
-    display: block;
+.divLiveNavBar h3 {
+    margin: 0 0 0 0;
+    font-size: 24px;
+    font-weight: 700;
 }
