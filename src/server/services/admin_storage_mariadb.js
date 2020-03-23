@@ -3,7 +3,7 @@ let mariadb = require('mariadb');
 class MariaDBAdminStorageService {
 
     constructor() {
-        this.config = require('../../common/config.json').storage.ogpsy;
+        this.config = require('../../common/config.json').storage.rapidsgis;
         // connecting to DB
         this.pool = mariadb.createPool({
             host: this.config.host,

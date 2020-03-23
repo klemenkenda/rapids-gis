@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 // loading routers
-const gpsRouter = require('./routes/gps');
+const dataRouter = require('./routes/data');
 const staticRouter = require('./routes/static');
 const adminRouter = require('./routes/admin');
 
@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 
 // setting up routes
 app.use('/api/admin', adminRouter.prepareAdminRoutes());
-app.use('/api', gpsRouter.prepareGPSRoutes());
+app.use('/api', dataRouter.prepareDataRoutes());
 staticRouter.prepareMapRoutes(app);
 staticRouter.prepareGuiRoutes(app);
 

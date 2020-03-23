@@ -1,11 +1,11 @@
 {
     "storage": {
-        "ogpsy": {
+        "rapidsgis": {
             "host": "localhost",
             "root_password": "example",
-            "user": "ogpsy",
-            "password": "Th0uSha11S4v3",
-            "db": "ogpsy"
+            "user": "root",
+            "password": "example",
+            "db": "rapidsiot"
         }
     },
     "service": {
