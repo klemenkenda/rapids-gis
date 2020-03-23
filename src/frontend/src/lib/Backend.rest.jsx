@@ -15,6 +15,10 @@ export class RestDataBackend implements LiveBackend {
         return (await axios.get("/api/nodes")).data;
     };
 
+    async getSensors(): Promise {
+        return (await axios.get("/api/sensors")).data;
+    };
+
     async getLastSnapshot(): Promise {
         return (await axios.get("/api/snapshot")).data;
     };

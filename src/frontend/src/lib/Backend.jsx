@@ -3,6 +3,7 @@
 export interface DataBackend {
     getPlaces(): any;
     getNodes(): any;
+    getSensors(): any;
     getLastSnapshot(): any;
     getSensorTs(sensor_id): any;
     getTime(done, err): void;

@@ -1,0 +1,42 @@
+.divTrafficData {
+    font-family: 'Roboto Condensed', sans-serif;
+    position: fixed;
+    top: 100px;
+    left: 100px;
+    right: 100px;
+    bottom: 100px;
+
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 10000;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    overflow-y: auto;
+}
+
+.divTrafficData a {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.divTrafficData td {
+    font-size: 14px;
+}
+
+.divTrafficData table {
+    border: 1px solid gray;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.divTrafficData table td:nth-child(2),
+.divTrafficData table th:nth-child(2) {
+    text-align: right;
+    width: 200px;
+}
+
+.divTrafficData h3 {
+    margin: 0 0 0 0;
+    font-size: 24px;
+    font-weight: 700;
+}
