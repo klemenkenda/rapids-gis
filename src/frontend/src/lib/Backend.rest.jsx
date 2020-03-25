@@ -31,6 +31,14 @@ export class RestDataBackend implements LiveBackend {
         return (await axios.get("/api/timestamp")).data;
     }
 
+    // EXTERNAL
+    async getFursPosts() {
+        return (await axios.get("http://ncku.siska.io/gisdatasource/poste")).data;
+    }
+
+    async getFursPins() {
+        return (await axios.get("http://ncku.siska.io/gisdatasource/pins")).data;
+    }
 };
 
 export class RestAdminBackend implements AdminBackend {

@@ -129,20 +129,18 @@ class Live extends Component<Props, State> {
                 })
             ];
 
-            // create a map
-            this.map = L.map('map', {
-                center: view_center,
-                zoom: 9,
-                layers: layers
-            });
-            this.map.zoomControl.setPosition('topright');
-            L.control.scale().addTo(this.map);
+            let trafficLayer = L.layerGroup([]);
 
             // let event = await getBackend().live.getEvent(this.event_id);
             let places = await getBackend().data.getPlaces();
             let nodes = await getBackend().data.getNodes();
             let sensors = await getBackend().data.getSensors();
             let snapshot = await getBackend().data.getLastSnapshot();
+
+            let posts = await getBackend().data.getFursPosts();
+            let pins = await getBackend().data.getFursPins();
+
+            console.log(posts, pins);
 
             this.setState({
                 places,
@@ -153,6 +151,7 @@ class Live extends Component<Props, State> {
 
             console.log(places[0], nodes[0], sensors[2], snapshot);
 
+            // GENERATE traffic layer
             // init markers for places (counters)
             let counters = [];
             let i = 0;
@@ -182,11 +181,26 @@ class Live extends Component<Props, State> {
                 place.class = highestPlaceClass;
 
                 counters.push(
-                    new Counter(this, { x: place.x, y: place.y, title: place.title, class: place.class, data: place }, this.map)
+                    new Counter(this, { x: place.x, y: place.y, title: place.title, class: place.class, data: place }, trafficLayer)
                 );
                 i++;
             }
 
+            // create a map
+            this.map = L.map('map', {
+                center: view_center,
+                zoom: 9,
+                layers: [ ...layers, trafficLayer ]
+            });
+            this.map.zoomControl.setPosition('topright');
+            L.control.scale().addTo(this.map);
+            let baseMaps = {
+                "OSM": layers[0]
+            };
+            let overlayMaps = {
+                "Promet - pretok": trafficLayer
+            }
+            L.control.layers(baseMaps, overlayMaps).addTo(this.map);
 
             // add map image dynamically
             /*

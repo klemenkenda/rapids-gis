@@ -7,6 +7,8 @@ export interface DataBackend {
     getLastSnapshot(): any;
     getSensorTs(sensor_id): any;
     getTime(done, err): void;
+    getFursPosts(): void;
+    getFursPins(): void;
 }
 
 export interface AdminBackend {
