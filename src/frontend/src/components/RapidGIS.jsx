@@ -124,12 +124,46 @@ class Live extends Component<Props, State> {
             const view_center = [46.1491664, 14.9860106];
 
             let layers = [
+                L.tileLayer.wms('http://service.geopedia.world/wms/covid19?', {
+                    layers: 'ttl2930',
+                    format: 'image/png',
+                    transparent: false,
+                    detectRetina: true
+                }),
                 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                })
+                }),
             ];
 
             let trafficLayer = L.layerGroup([]);
+            let olderHomesLayer = L.tileLayer.wms('http://service.geopedia.world/wms/covid19?', {
+                layers: 'ttl3073',
+                format: 'image/png',
+                transparent: true,
+                detectRetina: true
+            });
+
+            let hospitalLayer = L.tileLayer.wms('http://service.geopedia.world/wms/covid19?', {
+                layers: 'ttl3033',
+                format: 'image/png',
+                transparent: true,
+                detectRetina: true
+            });
+
+            let pharmacyLayer = L.tileLayer.wms('http://service.geopedia.world/wms/covid19?', {
+                layers: 'ttl3034',
+                format: 'image/png',
+                transparent: true,
+                detectRetina: true
+            });
+
+            let municipalityLayer = L.tileLayer.wms('http://service.geopedia.world/wms/covid19?', {
+                layers: 'ttl3020',
+                format: 'image/png',
+                transparent: true,
+                detectRetina: true
+            });
+
 
             // let event = await getBackend().live.getEvent(this.event_id);
             let places = await getBackend().data.getPlaces();
@@ -190,16 +224,23 @@ class Live extends Component<Props, State> {
             this.map = L.map('map', {
                 center: view_center,
                 zoom: 9,
-                layers: [ ...layers, trafficLayer ]
+                layers: [ ...layers, municipalityLayer ]
             });
             this.map.zoomControl.setPosition('topright');
             L.control.scale().addTo(this.map);
             let baseMaps = {
-                "OSM": layers[0]
+                "Slovenia Topo": layers[0],
+                "Open Street Maps": layers[1],
             };
+
             let overlayMaps = {
-                "Promet - pretok": trafficLayer
+                "Promet - pretok": trafficLayer,
+                "Domovi za starejše občane": olderHomesLayer,
+                "Bolnišnice in ZD": hospitalLayer,
+                "Lekarne": pharmacyLayer,
+                "Občine": municipalityLayer
             }
+
             L.control.layers(baseMaps, overlayMaps).addTo(this.map);
 
             // add map image dynamically
