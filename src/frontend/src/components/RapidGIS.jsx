@@ -317,7 +317,9 @@ class Live extends Component<Props, State> {
             });
 
             this.map.on('overlayremove', function (eventLayer) {
-                this.removeControl(legendFursPins);
+                if (eventLayer.name === 'FURS pins') {
+                    this.removeControl(legendFursPins);
+                }
             });
 
             // add map image dynamically
