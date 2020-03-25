@@ -172,7 +172,7 @@ class Live extends Component<Props, State> {
 
 
             // GENERATE TRAFFIC layer
-            if (false) {
+            if (true) {
                 let places = await getBackend().data.getPlaces();
                 let nodes = await getBackend().data.getNodes();
                 let sensors = await getBackend().data.getSensors();
@@ -237,8 +237,6 @@ class Live extends Component<Props, State> {
                     furspins
                 });
 
-                console.log(furspins);
-
                 let pins = [];
                 const unique = [...new Set(furspins.map(item => item.cat_ijs_2))];
                 let i = 0;
@@ -281,7 +279,7 @@ class Live extends Component<Props, State> {
 
             let overlayMaps = {
                 "FURS pins": fursPinsLayer,
-                // "Promet - pretok": trafficLayer,
+                "Promet - pretok": trafficLayer,
                 "Domovi za starejše občane": olderHomesLayer,
                 "Bolnišnice in ZD": hospitalLayer,
                 "Lekarne": pharmacyLayer,
