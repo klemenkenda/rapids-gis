@@ -228,6 +228,8 @@ class Live extends Component<Props, State> {
             }
 
             // GENERATE FURS PINS LAYER
+            let legendFursPins = L.control({position: 'bottomright'});
+
             if (true) {
                 let fursposts = await getBackend().data.getFursPosts();
                 let furspins = (await getBackend().data.getFursPins()).pins;
@@ -262,6 +264,21 @@ class Live extends Component<Props, State> {
 
                     i++;
                 }
+
+
+                // generate legend
+                legendFursPins.onAdd = function (map) {
+
+                    let div = L.DomUtil.create('div', 'info legend');
+
+                    for (const className of unique) {
+                        const color = unique.indexOf(className);
+                        div.innerHTML +=
+                            '<i style="background:' + pins[0].getColor(color) + '"></i> ' + className + '<br>';
+                    }
+
+                    return div;
+                };
             }
 
             // create a map
@@ -287,6 +304,21 @@ class Live extends Component<Props, State> {
             }
 
             L.control.layers(baseMaps, overlayMaps).addTo(this.map);
+
+            // adding legend
+            legendFursPins.addTo(this.map);
+
+            this.map.on('overlayadd', function (eventLayer) {
+                // Switch to the Permafrost legend...
+                if (eventLayer.name === 'FURS pins') {
+                    legendFursPins.addTo(this);
+                };
+                console.log(eventLayer);
+            });
+
+            this.map.on('overlayremove', function (eventLayer) {
+                this.removeControl(legendFursPins);
+            });
 
             // add map image dynamically
             /*
