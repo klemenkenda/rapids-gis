@@ -10,7 +10,6 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 import './css/TrafficData.css';
-import { lZ } from '../lib/Utils';
 
 // defining types
 type Props = {

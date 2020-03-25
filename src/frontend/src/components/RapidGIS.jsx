@@ -10,6 +10,7 @@ import { getBackend } from '../lib/Backend';
 // import subcomponents
 import TitleNavBar from './TitleNavBar';
 import Counter from './Counter';
+import FursPin from './FursPin';
 import TrafficDataTable from './TrafficDataTable';
 import TrafficDataChart from './TrafficDataChart';
 
@@ -29,6 +30,8 @@ type State = {
     snapshot: Array,
     nodes: Array,
     sensors: Array,
+    furspins: Array,
+    fursposts: Array,
     current_ts: number,
     actionable_ts: number,
     action: string,
@@ -50,6 +53,8 @@ class Live extends Component<Props, State> {
             snapshot: [],
             nodes: [],
             sensors: [],
+            furspins: [],
+            fursposts: [],
             current_ts: 2147483647,
             actionable_ts: 2147483647,
             action: "live",
@@ -136,6 +141,7 @@ class Live extends Component<Props, State> {
             ];
 
             let trafficLayer = L.layerGroup([]);
+            let fursPinsLayer = L.layerGroup([]);
             let olderHomesLayer = L.tileLayer.wms('http://service.geopedia.world/wms/covid19?', {
                 layers: 'ttl3073',
                 format: 'image/png',
@@ -165,66 +171,107 @@ class Live extends Component<Props, State> {
             });
 
 
-            // let event = await getBackend().live.getEvent(this.event_id);
-            let places = await getBackend().data.getPlaces();
-            let nodes = await getBackend().data.getNodes();
-            let sensors = await getBackend().data.getSensors();
-            let snapshot = await getBackend().data.getLastSnapshot();
+            // GENERATE TRAFFIC layer
+            if (false) {
+                let places = await getBackend().data.getPlaces();
+                let nodes = await getBackend().data.getNodes();
+                let sensors = await getBackend().data.getSensors();
+                let snapshot = await getBackend().data.getLastSnapshot();
 
-            let posts = await getBackend().data.getFursPosts();
-            let pins = await getBackend().data.getFursPins();
+                this.setState({
+                    places,
+                    nodes,
+                    sensors,
+                    snapshot
+                });
 
-            console.log(posts, pins);
+                // GENERATE traffic layer
+                // init markers for places (counters)
+                let counters = [];
+                for (let place of places) {
+                    // merge node with place
+                    place.nodes = nodes.filter(x => place.uuid === x.place_uuid);
 
-            this.setState({
-                places,
-                nodes,
-                sensors,
-                snapshot
-            });
+                    let highestPlaceClass = 0;
 
-            console.log(places[0], nodes[0], sensors[2], snapshot);
+                    for (let node of place.nodes) {
+                        // merge sensors with node
+                        node.sensors = sensors.filter(x => x.node_uuid === node.uuid);
 
-            // GENERATE traffic layer
-            // init markers for places (counters)
-            let counters = [];
-            let i = 0;
-            for (let place of places) {
-                // merge node with place
-                place.nodes = nodes.filter(x => place.uuid === x.place_uuid);
+                        // merge with snapshot data
+                        for (let sensor of node.sensors) {
+                            sensor.snap = snapshot.filter(x => x.sensor_id === sensor.id)[0];
 
-                let highestPlaceClass = 0;
-
-                for (let node of place.nodes) {
-                    // merge sensors with node
-                    node.sensors = sensors.filter(x => x.node_uuid === node.uuid);
-
-                    // merge with snapshot data
-                    for (let sensor of node.sensors) {
-                        sensor.snap = snapshot.filter(x => x.sensor_id === sensor.id)[0];
-
-                        // extract highest class of the counter (except 6, which is sort of inactive)
-                        if (sensor.sensor_type_uuid === "class") {
-                            if ((sensor.snap.value > highestPlaceClass) && (sensor.snap.value < 6)) {
-                                highestPlaceClass = sensor.snap.value;
+                            // extract highest class of the counter (except 6, which is sort of inactive)
+                            if (sensor.sensor_type_uuid === "class") {
+                                if ((sensor.snap.value > highestPlaceClass) && (sensor.snap.value < 6)) {
+                                    highestPlaceClass = sensor.snap.value;
+                                }
                             }
                         }
                     }
+
+                    place.class = highestPlaceClass;
+
+                    counters.push(
+                        new Counter(this,
+                            {
+                                x: place.x, y: place.y,
+                                title: place.title,
+                                class: place.class,
+                                data: place
+                            },
+                            trafficLayer
+                        )
+                    );
+                }
+            }
+
+            // GENERATE FURS PINS LAYER
+            if (true) {
+                let fursposts = await getBackend().data.getFursPosts();
+                let furspins = (await getBackend().data.getFursPins()).pins;
+
+                this.setState({
+                    fursposts,
+                    furspins
+                });
+
+                let pins = [];
+                const unique = [...new Set(furspins.map(item => item.cat_ijs_2))];
+                let i = 0;
+                for (let fp of furspins) {
+                    if (i === 0) {
+                        console.log(fp);
+                        console.log(unique.indexOf(fp.cat_ijs_2));
+                    }
+
+                    pins.push(
+                        new FursPin(this,
+                            {
+                                x: fp.lon,
+                                y: fp.lat,
+                                title: fp.cat_ijs_2,
+                                class: unique.indexOf(fp.cat_ijs_2),
+                                eur_frac: fp.eur_frac,
+                                n_frac: fp.n_frac
+                            },
+                            fursPinsLayer
+                        )
+                    )
+
+                    i++;
                 }
 
-                place.class = highestPlaceClass;
 
-                counters.push(
-                    new Counter(this, { x: place.x, y: place.y, title: place.title, class: place.class, data: place }, trafficLayer)
-                );
-                i++;
+
             }
 
             // create a map
             this.map = L.map('map', {
                 center: view_center,
                 zoom: 9,
-                layers: [ ...layers, municipalityLayer ]
+                layers: [ ...layers, fursPinsLayer ]
             });
             this.map.zoomControl.setPosition('topright');
             L.control.scale().addTo(this.map);
@@ -234,7 +281,8 @@ class Live extends Component<Props, State> {
             };
 
             let overlayMaps = {
-                "Promet - pretok": trafficLayer,
+                // "Promet - pretok": trafficLayer,
+                "FURS pins": fursPinsLayer,
                 "Domovi za starejše občane": olderHomesLayer,
                 "Bolnišnice in ZD": hospitalLayer,
                 "Lekarne": pharmacyLayer,
