@@ -237,6 +237,8 @@ class Live extends Component<Props, State> {
                     furspins
                 });
 
+                console.log(furspins);
+
                 let pins = [];
                 const unique = [...new Set(furspins.map(item => item.cat_ijs_2))];
                 let i = 0;
@@ -262,9 +264,6 @@ class Live extends Component<Props, State> {
 
                     i++;
                 }
-
-
-
             }
 
             // create a map
@@ -281,8 +280,8 @@ class Live extends Component<Props, State> {
             };
 
             let overlayMaps = {
-                // "Promet - pretok": trafficLayer,
                 "FURS pins": fursPinsLayer,
+                // "Promet - pretok": trafficLayer,
                 "Domovi za starejše občane": olderHomesLayer,
                 "Bolnišnice in ZD": hospitalLayer,
                 "Lekarne": pharmacyLayer,

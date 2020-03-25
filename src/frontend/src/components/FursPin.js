@@ -34,25 +34,9 @@ class FursPin {
      */
     initMarker() {
         // add marker
-        // popup content
-        let content = "<b>" + this.props.title + "</b><br />";
-        /*
-        const nodes = this.props.data.nodes;
-        for (const node of nodes) {
-            content += node.title + ": ";
-
-            for (const sensor of node.sensors) {
-                if (sensor.snap.sensor_type_uuid === "number") {
-                    content += "<font style='color: " + this.color + "'>" + sensor.snap.value + " avtov/h</font><br />";
-                    content += "&nbsp;&nbsp; &rarr; <a href='#table=" + sensor.id + "'>tabela</a> | <a href='#chart=" + sensor.id + "'>graf</a><br />";
-                }
-            }
-        }
-        */
-
         this.marker = L.circleMarker([this.props.y, this.props.x],
             {
-                radius: 2 + Math.min(0.3 + this.props.n_frac * 50, 10),
+                radius: 4 + Math.min(0.3 + this.props.n_frac * 60, 12),
                 color: 'black', weight: 1,
                 fillColor: this.color,
                 fillOpacity: Math.min(0.3 + this.props.eur_frac * 10, 1),
