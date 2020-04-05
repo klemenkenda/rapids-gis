@@ -15,22 +15,24 @@ class PgDataStorageService {
     }
 
     async getSnapshot() {
-        let conn;
-
         try {
             // find last timestamp
-            let timestamp = await this.pool.query(`select max(measurement_ts) as ts from measurements`);
+            let timestamp = await this.pool.query(`select max(measurement_ts) as ts from rapids_iot.measurements`);
 
-            let ts = timestamp[0].ts;
+            let ts = timestamp.rows[0].ts;
 
             let query = `
             select
-                unix_timestamp(measurement_ts) as ts,
+                extract(epoch from measurement_ts) as ts,
                 sensor_id, value, sensor_type_uuid, uom,
                 nodes.uuid as node_uuid
-            from measurements, sensors, nodes, sensor_types
+            from
+                rapids_iot.measurements,
+                rapids_iot.sensors,
+                rapids_iot.nodes,
+                rapids_iot.sensor_types
             where
-                measurement_ts = ? and
+                measurement_ts = $1 and
                 measurements.sensor_id = sensors.id and
                 sensors.node_uuid = nodes.uuid and
                 sensor_type_uuid = sensor_types.uuid
@@ -41,101 +43,67 @@ class PgDataStorageService {
         } catch(err) {
             console.log(err);
             throw(err);
-        } finally {
-            if (conn) conn.end();
         }
     }
 
 
     async getPlaces() {
-        let conn;
-
         try {
-            conn = await this.pool.getConnection();
-            await conn.query('use ' + this.config.db);
-
-            // find last timestamp
-            let query = `select * from places`;
-            let records = await conn.query(query);
-            return(records);
+            let query = `select * from rapids_iot.places`;
+            let records = await this.pool.query(query);
+            return(records.rows);
 
         } catch(err) {
             console.log(err);
             throw(err);
-        } finally {
-            if (conn) conn.end();
         }
     }
 
 
     async getNodes() {
-        let conn;
-
         try {
-            conn = await this.pool.getConnection();
-            await conn.query('use ' + this.config.db);
-
-            // find last timestamp
-            let query = `select * from nodes`;
-            let records = await conn.query(query);
-            return(records);
+            let query = `select * from rapids_iot.nodes`;
+            let records = await this.pool.query(query);
+            return(records.rows);
 
         } catch(err) {
             console.log(err);
             throw(err);
-        } finally {
-            if (conn) conn.end();
         }
     }
 
 
     async getSensors() {
-        let conn;
-
         try {
-            conn = await this.pool.getConnection();
-            await conn.query('use ' + this.config.db);
-
-            // find last timestamp
-            let query = `select * from sensors`;
-            let records = await conn.query(query);
-            return(records);
+            let query = `select * from rapids_iot.sensors`;
+            let records = await this.pool.query(query);
+            return(records.rows);
 
         } catch(err) {
             console.log(err);
             throw(err);
-        } finally {
-            if (conn) conn.end();
         }
     }
 
 
     async getSensorTs(sensor_id) {
-        let conn;
-
         try {
-            conn = await this.pool.getConnection();
-            await conn.query('use ' + this.config.db);
-
-            // find last timestamp
             let query = `
             select
-                unix_timestamp(measurement_ts) as ts,
+                extract(epoch from measurement_ts) as ts,
                 value
             from
-                measurements
+                rapids_iot.measurements
             where
-                measurement_ts >= (now() - interval 1 day) and
-                sensor_id = ?`;
+                sensor_id = $1 and
+                measurement_ts >= (now() - interval '1 day')`;
 
-            let records = await conn.query(query, [ sensor_id ]);
-            return(records);
+            let records = await this.pool.query(query, [ sensor_id ]);
+            return(records.rows);
 
         } catch(err) {
             console.log(err);
             throw(err);
-        } finally {
-            if (conn) conn.end();
         }
     }
 
