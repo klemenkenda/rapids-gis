@@ -228,57 +228,62 @@ class Live extends Component<Props, State> {
             }
 
             // GENERATE FURS PINS LAYER
-            let legendFursPins = L.control({position: 'bottomright'});
+            let legendFursPins;
+            try {
+                legendFursPins = L.control({position: 'bottomright'});
+                if (true) {
+                    let fursposts = await getBackend().data.getFursPosts();
+                    let furspins = (await getBackend().data.getFursPins()).pins;
 
-            if (true) {
-                let fursposts = await getBackend().data.getFursPosts();
-                let furspins = (await getBackend().data.getFursPins()).pins;
+                    this.setState({
+                        fursposts,
+                        furspins
+                    });
 
-                this.setState({
-                    fursposts,
-                    furspins
-                });
+                    let pins = [];
+                    const unique = [...new Set(furspins.map(item => item.cat_ijs_2))];
+                    let i = 0;
+                    for (let fp of furspins) {
+                        if (i === 0) {
+                            console.log(fp);
+                            console.log(unique.indexOf(fp.cat_ijs_2));
+                        }
 
-                let pins = [];
-                const unique = [...new Set(furspins.map(item => item.cat_ijs_2))];
-                let i = 0;
-                for (let fp of furspins) {
-                    if (i === 0) {
-                        console.log(fp);
-                        console.log(unique.indexOf(fp.cat_ijs_2));
-                    }
-
-                    pins.push(
-                        new FursPin(this,
-                            {
-                                x: fp.lon,
-                                y: fp.lat,
-                                title: fp.cat_ijs_2,
-                                class: unique.indexOf(fp.cat_ijs_2),
-                                eur_frac: fp.eur_frac,
-                                n_frac: fp.n_frac
-                            },
-                            fursPinsLayer
+                        pins.push(
+                            new FursPin(this,
+                                {
+                                    x: fp.lon,
+                                    y: fp.lat,
+                                    title: fp.cat_ijs_2,
+                                    class: unique.indexOf(fp.cat_ijs_2),
+                                    eur_frac: fp.eur_frac,
+                                    n_frac: fp.n_frac
+                                },
+                                fursPinsLayer
+                            )
                         )
-                    )
 
-                    i++;
-                }
-
-
-                // generate legend
-                legendFursPins.onAdd = function (map) {
-
-                    let div = L.DomUtil.create('div', 'info legend');
-
-                    for (const className of unique) {
-                        const color = unique.indexOf(className);
-                        div.innerHTML +=
-                            '<i style="background:' + pins[0].getColor(color) + '"></i> ' + className + '<br>';
+                        i++;
                     }
 
-                    return div;
-                };
+
+                    // generate legend
+                    legendFursPins.onAdd = function (map) {
+
+                        let div = L.DomUtil.create('div', 'info legend');
+
+                        for (const className of unique) {
+                            const color = unique.indexOf(className);
+                            div.innerHTML +=
+                                '<i style="background:' + pins[0].getColor(color) + '"></i> ' + className + '<br>';
+                        }
+
+                        return div;
+                    };
+                }
+            } catch (e) {
+                console.log("ERROR loading FURS", e);
+                legendFursPins = null;
             }
 
             // create a map
@@ -306,18 +311,20 @@ class Live extends Component<Props, State> {
             L.control.layers(baseMaps, overlayMaps).addTo(this.map);
 
             // adding legend
-            legendFursPins.addTo(this.map);
+            if (legendFursPins) {
+                legendFursPins.addTo(this.map);
+            }
 
             this.map.on('overlayadd', function (eventLayer) {
                 // Switch to the Permafrost legend...
-                if (eventLayer.name === 'FURS pins') {
+                if ((eventLayer.name === 'FURS pins') && (legendFursPins)) {
                     legendFursPins.addTo(this);
                 };
                 console.log(eventLayer);
             });
 
             this.map.on('overlayremove', function (eventLayer) {
-                if (eventLayer.name === 'FURS pins') {
+                if ((eventLayer.name === 'FURS pins') && (legendFursPins)) {
                     this.removeControl(legendFursPins);
                 }
             });

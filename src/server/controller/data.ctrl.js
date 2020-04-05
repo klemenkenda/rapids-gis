@@ -1,4 +1,5 @@
-const Storage = require('../services/data_storage_mariadb');
+// const Storage = require('../services/data_storage_mariadb');
+const Storage = require('../services/data_storage_pg');
 const storage = new Storage();
 
 const Utils = require('./req_utils');

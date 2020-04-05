@@ -22,8 +22,8 @@ class TitleNavBar extends Component<Props, State> {
     render() {
 
         return <div className="divLiveNavBar">
-            <h3>NCKU GIS</h3>
-            <span>Nacionalni center za krizno upravljanje</span>
+            <h3>Slovenija</h3>
+            <span>Digitalni dvojček</span>
         </div>
 
     }
