@@ -4,7 +4,6 @@ import './index.css';
 import App from './components/App.jsx';
 import * as serviceWorker from './serviceWorker';
 
-
 // initialize backend
 import { setBackend } from './lib/Backend';
 // eslint-disable-next-line

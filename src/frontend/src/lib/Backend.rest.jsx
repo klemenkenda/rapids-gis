@@ -8,36 +8,37 @@ export class RestDataBackend implements LiveBackend {
     }
 
     async getPlaces(): Promise {
-        return (await axios.get("/api/places")).data;
+        console.log(`${process.env.PUBLIC_URL}/api/places`);
+        return (await axios.get(`${process.env.PUBLIC_URL}/api/places`)).data;
     };
 
     async getNodes(): Promise {
-        return (await axios.get("/api/nodes")).data;
+        return (await axios.get(`${process.env.PUBLIC_URL}/api/nodes`)).data;
     };
 
     async getSensors(): Promise {
-        return (await axios.get("/api/sensors")).data;
+        return (await axios.get(`${process.env.PUBLIC_URL}/api/sensors`)).data;
     };
 
     async getLastSnapshot(): Promise {
-        return (await axios.get("/api/snapshot")).data;
+        return (await axios.get(`${process.env.PUBLIC_URL}/api/snapshot`)).data;
     };
 
     async getSensorTs(sensor_id) {
-        return (await axios.get("/api/sensorts/" + sensor_id)).data;
+        return (await axios.get(`${process.env.PUBLIC_URL}/api/sensorts/${sensor_id}`)).data;
     };
 
     async getTime() {
-        return (await axios.get("/api/timestamp")).data;
+        return (await axios.get(`${process.env.PUBLIC_URL}/api/timestamp`)).data;
     }
 
     // EXTERNAL
     async getFursPosts() {
-        return (await axios.get("http://ncku.siska.io/gisdatasource/poste")).data;
+        return (await axios.get("https://ncku.siska.io/gis/datasource/poste")).data;
     }
 
     async getFursPins() {
-        return (await axios.get("http://ncku.siska.io/gisdatasource/pins")).data;
+        return (await axios.get("https://ncku.siska.io/gis/datasource/pinschah2Ohy")).data;
     }
 };
 

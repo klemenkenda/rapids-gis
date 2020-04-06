@@ -23,7 +23,7 @@ class TitleNavBar extends Component<Props, State> {
 
         return <div className="divLiveNavBar">
             <h3>Slovenija</h3>
-            <span>Digitalni dvojček</span>
+            <span>Digitalni dvojček - GIS</span>
         </div>
 
     }

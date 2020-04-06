@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 
 // setting up routes
 // app.use('/api/admin', adminRouter.prepareAdminRoutes());
-app.use('/api', dataRouter.prepareDataRoutes());
+app.use('//api', dataRouter.prepareDataRoutes());
 staticRouter.prepareMapRoutes(app);
 staticRouter.prepareGuiRoutes(app);
 

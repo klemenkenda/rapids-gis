@@ -41,9 +41,12 @@ class Counter {
             content += node.title + ": ";
 
             for (const sensor of node.sensors) {
-                if (sensor.snap.sensor_type_uuid === "number") {
-                    content += "<font style='color: " + this.color + "'>" + sensor.snap.value + " avtov/h</font><br />";
-                    content += "&nbsp;&nbsp; &rarr; <a href='#table=" + sensor.id + "'>tabela</a> | <a href='#chart=" + sensor.id + "'>graf</a><br />";
+
+                if (sensor.snap) {
+                    if (sensor.snap.sensor_type_uuid === "number") {
+                        content += "<font style='color: " + this.color + "'>" + sensor.snap.value + " avtov/h</font><br />";
+                        content += "&nbsp;&nbsp; &rarr; <a href='#table=" + sensor.id + "'>tabela</a> | <a href='#chart=" + sensor.id + "'>graf</a><br />";
+                    }
                 }
             }
         }

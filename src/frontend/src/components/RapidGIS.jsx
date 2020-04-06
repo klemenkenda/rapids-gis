@@ -178,6 +178,8 @@ class Live extends Component<Props, State> {
                 let sensors = await getBackend().data.getSensors();
                 let snapshot = await getBackend().data.getLastSnapshot();
 
+                console.log(snapshot);
+
                 this.setState({
                     places,
                     nodes,
@@ -201,7 +203,6 @@ class Live extends Component<Props, State> {
                         // merge with snapshot data
                         for (let sensor of node.sensors) {
                             sensor.snap = snapshot.filter(x => x.sensor_id === sensor.id)[0];
-
                             // extract highest class of the counter (except 6, which is sort of inactive)
                             if (sensor.sensor_type_uuid === "class") {
                                 if ((sensor.snap.value > highestPlaceClass) && (sensor.snap.value < 6)) {

@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import ReactRouterPropTypes from "react-router-prop-types";
+import { createBrowserHistory } from 'history';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // bootstrap components
@@ -33,14 +34,14 @@ type State = {};
 class App extends React.Component<Props, State> {
     render() {
         return [
-            <Router key={1}>
+            <Router basename={process.env.PUBLIC_URL} key={1}>
                 <Switch>
                     <Route path="!/" exact={true} key={1}>
                         <Header />
                     </Route>
                 </Switch>
             </Router>,
-            <Router key={2}>
+            <Router basename={process.env.PUBLIC_URL} key={2}>
                 <Switch>
                     <Route path="/" exact={true} key={1} component={RapidGIS} />
                     <Route path="/login" key={2}>
@@ -59,7 +60,7 @@ class App extends React.Component<Props, State> {
                     </Route>
                 </Switch>
             </Router>,
-            <Router key={3}>
+            <Router basename={process.env.PUBLIC_URL} key={3}>
                 <Switch>
                     <Route path="!/" exact={true} key={1}>
                         <footer className="text-muted pt-4" style={{ borderTop: "1px solid #eee" }}>
